@@ -209,7 +209,7 @@ const COLORS = {"자금·가격 동반": "#0ca30c", "자금만 유입": "#3987e5
                 "가격만 강세": "#fab219", "자금·가격 이탈": "#d03b3b"};
 const FG = {"자금·가격 동반": "#0b0b0b", "자금만 유입": "#fff", "뚜렷하지 않음": "#0b0b0b", "가격만 강세": "#0b0b0b", "자금·가격 이탈": "#fff"};
 const INK = "#f0efec", MUTED = "#898781", GRID = "#2c2c2a", SURFACE = "#1a1a19";
-let win = 20, data = null, selected = "XLK";
+let win = 5, data = null, selected = "XLK";
 const $ = id => document.getElementById(id);
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c])); }
 function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }

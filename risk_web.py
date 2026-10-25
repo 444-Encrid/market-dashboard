@@ -192,7 +192,7 @@ const ORDER = ["안정", "주의", "위험"];
 const NEUTRAL = {color: "#898781", icon: "–", fg: "#0b0b0b", tint: 0.07};
 const look = it => it.neutral ? NEUTRAL : STATUS[it.status];
 const INK = "#f0efec", MUTED = "#898781", GRID = "#2c2c2a", SURFACE = "#1a1a19", LINE = "#3987e5";
-let period = "6개월", data = null;
+let period = "1개월", data = null;
 const $ = id => document.getElementById(id);
 
 function rgba(hex, a) {
