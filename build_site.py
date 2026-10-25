@@ -1,7 +1,7 @@
 """PC가 꺼져 있어도 휴대폰에서 볼 수 있게, 대시보드 두 개를 정적 웹페이지로 만든다.
 
 GitHub Actions 가 30분마다 이 파일을 돌리고 결과(site 폴더)를 GitHub Pages 에 올린다.
-화면 코드(PAGE)는 PC 서버와 똑같은 것을 쓴다. 화면이 읽는 상대 주소 api/data 에 JSON 파일을 둔다.
+화면 파일(web/<이름>/ 의 HTML·CSS·JS)은 PC 서버와 똑같은 것을 쓴다. 화면이 읽는 상대 주소 api/data 에 JSON 파일을 둔다.
 원본 코드는 무한질문정리봇 폴더에 있고, 그쪽 `클라우드_올리기.bat` 이 이 폴더로 복사한다.
     python build_site.py site
 """
@@ -13,7 +13,8 @@ from pathlib import Path
 import flow_web
 import risk_web
 
-GUIDE = Path(__file__).parent / "섹터자금흐름_설명_읽기.html"
+ROOT = Path(__file__).parent
+GUIDE = ROOT / "섹터자금흐름_설명_읽기.html"
 
 
 def write(path: Path, text: str):
@@ -39,7 +40,9 @@ def main(out: Path):
             errors.append(f"{name}: {type(e).__name__}: {e}")
             continue
         write(out / name / "api" / "data", json.dumps(data, ensure_ascii=False))
-        write(out / name / "index.html", cloud_page(web.PAGE, stamp))
+        for f in (ROOT / "web" / name).iterdir():   # 화면 파일 (HTML·CSS·JS)
+            text = f.read_text(encoding="utf-8")
+            write(out / name / f.name, cloud_page(text, stamp) if f.name == "index.html" else text)
     write(out / "flow" / "guide" / "index.html", GUIDE.read_text(encoding="utf-8"))
     write(out / ".nojekyll", "")
     write(out / "index.html", f"""<!doctype html>

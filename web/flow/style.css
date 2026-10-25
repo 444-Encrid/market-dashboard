@@ -1,0 +1,88 @@
+:root{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1400px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:0}
+/* 맨 위 고정 바: 제목, 기간 버튼, 자금 기준일 */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--page);display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:10px 0;margin:-10px 0 4px;border-bottom:1px solid var(--grid)}
+.topbar .asof{color:var(--ink2);font-size:.85rem;margin-left:auto}
+.guide-link{color:#3987e5;font-size:.85rem;text-decoration:none;border:1px solid var(--grid);border-radius:8px;padding:5px 10px}
+@media (max-width:699px){h1{font-size:1.15rem}.topbar .seg button{padding:6px 11px}.topbar .asof{margin-left:0;font-size:.78rem}}
+#card,#detail-title{scroll-margin-top:110px}
+h2{font-size:1.3rem;margin:26px 0 6px}
+.bar{display:flex;gap:10px 20px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--grid);border-radius:8px;overflow:hidden}
+.seg button{background:none;border:0;color:var(--ink2);font:inherit;font-size:.9rem;padding:7px 14px;cursor:pointer}
+.seg button.on{background:#3987e5;color:#fff;font-weight:600}
+.note{color:var(--muted);font-size:.8rem;margin:6px 0}
+.banner{border-left:6px solid #3987e5;background:rgba(57,135,229,.12);border-radius:8px;padding:12px 16px;margin:8px 0 10px}
+.banner-title{font-size:1.2rem;font-weight:700}
+.banner-sub{color:var(--ink2);font-size:.9rem;margin-top:3px}
+.tiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.tile{flex:1 1 120px;border:1px solid var(--grid);border-top:4px solid var(--c);border-radius:8px;padding:8px 14px;background:var(--surface)}
+/* PC: 왼쪽 그림·표, 오른쪽 고정 요약 판. 1100px 미만은 한 단 (요약은 위, 카드는 표 아래로 옮긴다) */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
+.mainc{min-width:0}
+.side{position:sticky;top:72px;max-height:calc(100vh - 84px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.side:empty{display:none}
+@media (max-width:1099px){.layout{grid-template-columns:minmax(0,1fr)}.side{display:none}}
+.side .banner{margin:0}
+.side .tiles{flex-direction:column;gap:6px;margin:0}
+.side .tile{flex:none;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px;border-top:1px solid var(--grid);border-left:4px solid var(--c);padding:6px 12px}
+.side .tile-num{font-size:1.25rem;grid-row:span 2}
+.card{border:1px solid var(--grid);border-radius:10px;background:var(--surface);padding:12px 14px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card-head b{font-size:1.1rem}
+.wins{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 4px}
+.wins div{text-align:center;font-size:.7rem;color:var(--muted);line-height:1.3;word-break:keep-all}
+.wins .dot{width:14px;height:14px;margin:0 auto 3px;display:block}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;font-size:.88rem;margin:10px 0;font-variant-numeric:tabular-nums}
+.kv div{white-space:nowrap}
+.kv .k{color:var(--muted);display:block;font-size:.72rem}
+.against-title{font-size:.82rem;font-weight:700;color:#fab219;margin-top:10px}
+.against{margin:4px 0 0;padding-left:18px;font-size:.84rem;color:var(--ink2);line-height:1.5}
+.calm{font-size:.82rem;color:var(--muted);margin-top:10px}
+.dots{display:inline-flex;gap:4px;vertical-align:middle}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.cur{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--ink)}
+.warn{color:#fab219;font-weight:600}
+.matrix{border:1px solid var(--grid);border-radius:10px;background:var(--surface);padding:10px 12px;margin-bottom:6px}
+.matrix-title{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.matrix table{width:100%;font-size:.82rem}
+.matrix th,.matrix td{padding:5px 6px;text-align:center}
+.matrix td:first-child{text-align:left;white-space:nowrap}
+.matrix .cur{background:#26303d;color:var(--ink);font-weight:700}
+.say{font-size:.9rem;line-height:1.6;color:var(--ink);margin:10px 0 2px;padding:9px 11px;background:#22252b;border-radius:8px}
+#card-slot .card{margin-top:24px}
+.tile-label{color:var(--ink2);font-size:.85rem}
+.tile-num{font-size:1.7rem;font-weight:700;line-height:1.15}
+.tile-names{color:var(--muted);font-size:.75rem;margin-top:2px}
+.panel{border:1px solid var(--grid);border-radius:10px;padding:10px 12px;background:var(--surface)}
+#scatter{height:440px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;font-size:.83rem;white-space:nowrap;font-variant-numeric:tabular-nums;width:100%}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--grid)}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+th{color:var(--muted);font-weight:500;font-size:.78rem}
+tr.row{cursor:pointer}
+tr.row:hover{background:#222220}
+tr.row.sel{background:#26303d}
+tr.sub td:first-child{padding-left:28px;color:var(--ink2)}
+.tk{color:var(--muted);font-size:.75rem;margin-left:6px}
+.badge{display:inline-block;font-size:.76rem;font-weight:700;border-radius:999px;padding:2px 10px}
+.flowbar{display:inline-flex;width:64px;height:8px;vertical-align:middle;margin-left:8px}
+.flowbar>span{flex:1;display:flex}
+.flowbar>span:first-child{justify-content:flex-end;border-right:1px solid var(--muted)}
+.flowbar i{display:block;height:100%;border-radius:2px}
+.m-row{padding:9px 6px;border-bottom:1px solid var(--grid);cursor:pointer}
+.m-row.sub{padding-left:22px}
+.m-row.sel{background:#26303d}
+.m-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.m-row.sub .m-head{font-weight:500;color:var(--ink2)}
+.m-line{font-size:.82rem;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums}
+.pos{color:#4cc94c}.neg{color:#ef6a6a}.dim{color:var(--muted)}
+#detail-title{font-size:1.15rem;font-weight:700;margin:2px 0}
+#detail-chart{height:420px}
+.guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.guide-item{border:1px solid var(--grid);border-radius:8px;padding:10px 14px;background:var(--surface);color:var(--ink2);font-size:.86rem;line-height:1.6}
+.guide-item b{color:var(--ink)}
