@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}</style>
+<title>미국 섹터 자금 흐름 설명서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 『하루 전』 읽기 화면과 같은 단일 세로 단 + 상단 고정 바(목차·글자 크기·진행률).
+   다크 전용. 사실은 본문과 표, 내 풀이는 금색 상자. */
+:root {
+  color-scheme: dark;
+  --bg: #14161b;
+  --bg-raise: #1b1e25;
+  --bg-deep: #0e1014;
+  --line: #2a2e37;
+  --fg: #dcd6c8;
+  --fg-soft: #a9a497;
+  --muted: #767a84;
+  --accent: #c8a46e;
+  --apply: #7fb3a6;
+  --good: #8fbf7f;
+  --bad: #d98572;
+
+  --font-body: "Gowun Batang", "Noto Serif KR", "Nanum Myeongjo", serif;
+  --font-ui: "IBM Plex Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --font-mono: "IBM Plex Mono", "D2Coding", Consolas, monospace;
+
+  --fs: 19px;
+  --measure: 36rem;
+}
+html { background: var(--bg); }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: var(--fs); line-height: 1.9;
+  word-break: keep-all; overflow-wrap: break-word; -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg);
+}
+
+/* 상단 바 */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); font-family: var(--font-ui);
+}
+.bar-inner {
+  max-width: 48rem; margin: 0 auto; padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 10px;
+}
+.bar-title { font-size: 15px; font-weight: 600; color: var(--fg); white-space: nowrap; }
+.bar-chap { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+button {
+  font-family: var(--font-ui); font-size: 14px; color: var(--fg);
+  background: var(--bg-raise); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 11px; cursor: pointer; line-height: 1.2;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.progress { height: 2px; }
+.progress span { display: block; height: 100%; width: 0; background: var(--accent); }
+
+/* 목차 */
+.toc { border-bottom: 1px solid var(--line); background: var(--bg-raise); font-family: var(--font-ui); max-height: 70vh; overflow-y: auto; }
+.toc ol {
+  max-width: 48rem; margin: 0 auto; list-style: none; padding-block: 8px 14px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 2px;
+}
+.toc a { display: flex; gap: 14px; align-items: baseline; padding: 8px 4px; color: var(--fg); text-decoration: none; font-size: 16px; border-radius: 6px; }
+.toc a:hover { background: var(--bg); }
+.toc .n { color: var(--accent); font-size: 13px; width: 3.2em; flex: none; font-variant-numeric: tabular-nums; }
+.toc .who { margin-left: auto; font-size: 12px; color: var(--muted); }
+.toc .grp { font-size: 12px; letter-spacing: .14em; color: var(--muted); padding: 12px 4px 2px; }
+
+/* 본문 */
+main {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 6rem;
+}
+.cover { max-width: var(--measure); margin: 0 auto; padding-block: 5rem 3rem; }
+.eyebrow { font-family: var(--font-ui); font-size: 13px; letter-spacing: .18em; color: var(--accent); }
+.cover h1 { font-weight: 700; font-size: clamp(2.8rem, 11vw, 4.3rem); line-height: 1.1; margin: .4em 0 .2em; text-wrap: balance; }
+.cover .sub { font-size: 1.05em; color: var(--fg-soft); margin: 0 0 1.4em; }
+.cover .log { color: var(--fg-soft); margin: 0; }
+.cover .books { font-family: var(--font-ui); font-size: 14px; color: var(--fg-soft); margin-top: 2rem; display: grid; gap: 4px; }
+.cover .meta { font-family: var(--font-ui); font-size: 13px; color: var(--muted); margin-top: 1.4rem; }
+
+/* 부 구분 */
+.part { max-width: var(--measure); margin: 6rem auto 0; padding-top: 2.4rem; border-top: 2px solid var(--accent); }
+.part .pn { font-family: var(--font-ui); font-size: 13px; letter-spacing: .24em; color: var(--accent); }
+.part h2 { font-size: 1.9em; font-weight: 700; line-height: 1.25; margin: .25em 0 .2em; }
+.part p { color: var(--fg-soft); margin: 0; }
+
+.chapter { max-width: var(--measure); margin: 0 auto; padding-top: 4rem; scroll-margin-top: 64px; }
+.chapter header { margin-bottom: 2.2rem; border-top: 1px solid var(--line); padding-top: 2.8rem; }
+.chapter header .num { font-family: var(--font-ui); font-size: 13px; letter-spacing: .2em; color: var(--accent); }
+.chapter header .num .who { letter-spacing: .05em; color: var(--muted); margin-left: .6em; }
+.chapter h2 { font-size: 1.65em; font-weight: 700; line-height: 1.3; margin: .3em 0 0; text-wrap: balance; }
+.chapter h3 { font-family: var(--font-ui); font-size: .9em; font-weight: 600; color: var(--fg); margin: 2.2em 0 .8em; }
+.chapter p { margin: 0 0 1.1em; }
+.chapter ul, .chapter ol.list { margin: 0 0 1.2em; padding-left: 1.3em; display: grid; gap: .35em; }
+.chapter li::marker { color: var(--accent); }
+.chapter b { color: #efe8d8; font-weight: 700; }
+.lead { font-size: 1.08em; color: #efe8d8; }
+
+/* 이 장의 핵심 */
+.core {
+  margin: 2.2em 0 0; padding: 12px 16px; border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 0 8px 8px 0;
+}
+.core .label { display: block; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .14em; color: var(--accent); margin-bottom: .2em; }
+.core p { margin: 0; }
+
+/* 해석·응용 상자 */
+.note {
+  margin: 1.8em 0; padding: 16px 18px; border-radius: 8px;
+  background: var(--bg-raise); border: 1px solid var(--line);
+}
+.note .label { display: block; font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .14em; color: var(--accent); margin-bottom: .5em; }
+.note p:last-child, .note ul:last-child, .note ol:last-child { margin-bottom: 0; }
+.note.apply .label { color: var(--apply); }
+.note.apply { border-color: color-mix(in srgb, var(--apply) 35%, var(--line)); }
+
+/* 표 */
+.tbl { overflow-x: auto; margin: 1.6em 0; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-family: var(--font-ui); font-size: .8em; line-height: 1.6; }
+th, td { padding: 9px 8px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { color: var(--fg-soft); font-weight: 600; background: var(--bg-raise); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.k { color: var(--accent); white-space: nowrap; font-weight: 600; }
+td.num, th.num { font-family: var(--font-mono); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.up { color: var(--good); } .down { color: var(--bad); }
+.tcap { font-family: var(--font-ui); font-size: .78em; color: var(--muted); margin: -.8em 0 1.4em; }
+
+/* 복사 */
+.prompt {
+  font-family: var(--font-mono); font-size: .74em; line-height: 1.75; color: var(--fg-soft);
+  background: var(--bg-deep); border: 1px solid var(--line); border-radius: 8px;
+  padding: 14px 16px; white-space: pre-wrap; margin: 1.2em 0;
+}
+.copy-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 1.2em 0; }
+.copy-row button { font-size: 15px; padding: 10px 16px; }
+.copy-row button.done { border-color: var(--good); color: var(--good); }
+body.copying .copy-row, body.copying .noprint { display: none; }
+
+.end { max-width: var(--measure); margin: 5rem auto 0; text-align: center; font-family: var(--font-ui); color: var(--muted); font-size: 14px; }
+.end b { display: block; color: var(--accent); font-weight: 500; letter-spacing: .3em; margin-bottom: .6em; }
+.end p { font-size: 13px; line-height: 1.7; margin: 1.6em 0 0; text-align: left; }
+
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+th.num, td .txt { font-family: var(--font-ui); }
+
+td .mgr { display: block; color: var(--fg); }
+td .firm { display: block; font-size: .86em; color: var(--muted); }
+
+/* 늘림·줄임 막대 */
+.flow { display: grid; gap: 8px; margin: 1.6em 0; font-family: var(--font-ui); font-size: .78em; }
+.flow .row { display: grid; grid-template-columns: 4.6em 1fr 1fr; gap: 6px; align-items: center; }
+.flow .t { font-family: var(--font-mono); color: var(--fg); }
+.flow .l, .flow .r { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.flow .l { justify-content: flex-end; }
+.flow .l i, .flow .r i { display: block; height: 12px; border-radius: 3px; }
+.flow .l i { background: var(--good); } .flow .r i { background: var(--bad); }
+.flow .l span { color: var(--good); font-variant-numeric: tabular-nums; } .flow .r span { color: var(--bad); font-variant-numeric: tabular-nums; }
+.flow .head { color: var(--muted); font-size: 12px; }
+.flow .head .l, .flow .head .r { color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin: 1.6em 0; font-family: var(--font-ui); }
+.stats div { padding: 12px 14px; border-radius: 8px; background: var(--bg-raise); border: 1px solid var(--line); }
+.stats b { display: block; font-family: var(--font-mono); font-size: 1.5em; font-weight: 500; color: var(--fg); }
+.stats span { font-size: 12px; color: var(--muted); }
+.stats .g b { color: var(--good); } .stats .r b { color: var(--bad); }
+td .tag { font-size: 11px; color: var(--muted); margin-left: 4px; }
+
+/* 유입·유출 막대: 왼쪽이 유출(빨강), 오른쪽이 유입(초록) */
+.flow.fl .l i { background: var(--bad); }
+.flow.fl .r i { background: var(--good); }
+.flow.fl .l span { color: var(--bad); }
+.flow.fl .r span { color: var(--good); }
+.pill { display: inline-block; font-family: var(--font-ui); font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; white-space: nowrap; }
+code { font-family: var(--font-mono); font-size: .88em; background: var(--bg-raise); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-title">섹터 자금 흐름</span>
+    <span class="bar-chap" id="barChap">표지</span>
+    <button id="tocBtn" aria-expanded="false" aria-controls="toc">목차</button>
+    <button id="fsDown" aria-label="글자 작게">가−</button>
+    <button id="fsUp" aria-label="글자 크게">가+</button>
+  </div>
+  <div class="progress"><span id="prog"></span></div>
+  <nav class="toc" id="toc" hidden>
+    <ol>
+      <li><a href="#c1"><span class="n">1</span>한눈에 보기</a></li>
+      <li><a href="#c2"><span class="n">2</span>왜 ETF로 보나</a></li>
+      <li><a href="#c3"><span class="n">3</span>자료는 어디서 오나</a></li>
+      <li><a href="#c4"><span class="n">4</span>살펴보는 ETF 19개</a></li>
+      <li><a href="#c5"><span class="n">5</span>숫자 여섯 가지</a></li>
+      <li><a href="#c6"><span class="n">6</span>판정 다섯 가지</a></li>
+      <li><a href="#c7"><span class="n">7</span>화면 읽는 법</a></li>
+      <li><a href="#c8"><span class="n">8</span>10월 16일 화면 읽어 보기</a></li>
+      <li><a href="#c9"><span class="n">9</span>함정과 한계</a></li>
+      <li><a href="#c10"><span class="n">10</span>켜고 끄기와 파일</a></li>
+      <li class="grp">끝</li>
+      <li><a href="#c11"><span class="n">용어</span>낱말 풀이</a></li>
+    </ol>
+  </nav>
+</div>
+
+<main id="main">
+  <div class="cover">
+    <div class="eyebrow">STATE STREET ETF 19개 · 매일 자금 유입</div>
+    <h1>미국 섹터 자금 흐름 설명서</h1>
+    <p class="sub">미국 주식시장에서 돈이 어느 업종으로 들어가고, 어디서 빠지는가</p>
+    <p class="log">2026년 10월 20일에 만든 관측 프로그램의 설명서다. 무엇을 재는지, 숫자를 어떻게 읽는지, 어디서 틀릴 수 있는지를 차례로 적었다.</p>
+    <p class="meta">2026년 10월 20일 정리 · 예시 숫자는 10월 16일(미국 날짜) 기준</p>
+  </div>
+
+  <section class="chapter" id="c1" data-title="한눈에 보기">
+    <header><div class="num">1</div><h2>한눈에 보기</h2></header>
+    <p class="lead">업종별 ETF에 <b>실제로 들어오고 나간 돈</b>을 매일 계산해서, 돈과 가격이 같이 움직이는 업종을 찾는다.</p>
+    <div class="stats">
+      <div><b>19</b><span>살펴보는 ETF</span></div>
+      <div><b>4</b><span>기간 (5·20·60·120일)</span></div>
+      <div><b>5</b><span>판정 종류</span></div>
+    </div>
+    <p>하는 일은 세 단계다.</p>
+    <ol>
+      <li><b>모은다.</b> 운용사 State Street가 매일 올리는 ETF 기록(주식 수, 한 주 값)과 야후의 가격·거래량을 받는다.</li>
+      <li><b>잰다.</b> 업종마다 기간 동안 들어온 돈, 그 돈이 평소보다 많은지, 가격이 S&P500보다 강한지를 계산한다.</li>
+      <li><b>보여 준다.</b> 업종을 판정 다섯 가지로 나누고, 표·좌표·1년 차트로 그린다. 판정은 날마다 파일로 남긴다.</li>
+    </ol>
+    <div class="core"><span class="label">핵심</span><p>매수 신호를 주는 프로그램이 아니다. "지금 돈이 어디로 몰리나"를 숫자로 확인하는 관측 도구다.</p></div>
+  </section>
+
+  <section class="chapter" id="c2" data-title="왜 ETF로 보나">
+    <header><div class="num">2</div><h2>왜 ETF로 보나</h2></header>
+    <p>한국은 거래소가 매일 "외국인이 얼마, 기관이 얼마 샀다"를 공개한다. 앞서 본 Sector Flow Radar도 이 숫자로 돈의 흐름을 쟀다. <b>미국에는 이런 공개가 없다.</b> 누가 샀는지 매일 알 방법이 없다.</p>
+    <p>대신 ETF에는 돈이 오간 흔적이 남는다. ETF는 돈이 들어오면 주식을 <b>새로 찍고</b>, 돈이 나가면 주식을 <b>없앤다</b>. 그래서 주식 수가 늘어난 만큼이 그날 들어온 돈이다.</p>
+    <div class="note"><span class="label">계산 예시 · XLK(기술) 10월 16일</span>
+      <ul>
+        <li>10월 15일 주식 수: 659,411,794주</li>
+        <li>10월 16일 주식 수: 657,961,794주 → <b>1,450,000주 줄었다</b></li>
+        <li>10월 16일 한 주 값(NAV): 183.45달러</li>
+        <li>하루 유입 = −1,450,000주 × 183.45달러 = <b class="down">−2.66억 달러</b> (그날 2.66억 달러가 빠져나감)</li>
+      </ul>
+    </div>
+    <p>주식시장에서 남끼리 사고판 거래는 주식 수를 바꾸지 않는다. 주식 수는 ETF에 돈이 새로 들어오거나 빠질 때만 바뀐다. 그래서 거래량보다 이 값이 "돈의 이동"에 더 가깝다.</p>
+    <div class="core"><span class="label">핵심</span><p>미국판은 "누가 샀나" 대신 "업종 ETF에 돈이 얼마나 들어왔나"로 흐름을 본다.</p></div>
+  </section>
+
+  <section class="chapter" id="c3" data-title="자료는 어디서 오나">
+    <header><div class="num">3</div><h2>자료는 어디서 오나</h2></header>
+    <p>무료로, 키나 로그인 없이 받는다. 만들기 전에 출처 네 곳을 직접 시험했다.</p>
+    <div class="tbl"><table><thead><tr><th>출처</th><th>결과</th><th>쓰는 곳 / 안 쓰는 이유</th></tr></thead><tbody>
+      <tr><td class="k">State Street</td><td class="up">씀</td><td>매일 주식 수·NAV·순자산 엑셀. 2006년부터 있음. 하루 늦게 올라옴</td></tr>
+      <tr><td class="k">야후 파이낸스</td><td class="up">가격만 씀</td><td>가격과 거래량. 야후의 주식 수는 틀려서 안 씀 (XLK 2.7억 주로 나오는데 실제 6.6억 주)</td></tr>
+      <tr><td class="k">iShares (SOXX 등)</td><td class="down">안 씀</td><td>홈페이지에 오늘 값만 있고 과거 기록 파일이 잡히지 않음</td></tr>
+      <tr><td class="k">VanEck (SMH)</td><td class="down">안 씀</td><td>쿠키 확인 화면으로 넘겨 자동으로 받을 수 없음</td></tr>
+    </tbody></table></div>
+    <p>엑셀은 6시간마다 한 번 다시 받는다. 받기에 실패하면 전에 받아 둔 파일을 그대로 쓴다. 가격은 1시간마다 새로 받는다.</p>
+  </section>
+
+  <section class="chapter" id="c4" data-title="살펴보는 ETF 19개">
+    <header><div class="num">4</div><h2>살펴보는 ETF 19개</h2></header>
+    <p>미국 주식을 11개 업종으로 나눈 섹터 ETF 11개에, 그 안의 세부 업종 ETF 8개를 더했다. 세부 업종은 화면에서 속한 섹터 아래에 들여 쓴다.</p>
+    <div class="tbl"><table><thead><tr><th>섹터</th><th>세부 업종</th></tr></thead><tbody>
+      <tr><td class="k">기술 <span class="tag">XLK</span></td><td>반도체 <span class="tag">XSD</span> · 소프트웨어 <span class="tag">XSW</span></td></tr>
+      <tr><td class="k">통신서비스 <span class="tag">XLC</span></td><td>–</td></tr>
+      <tr><td class="k">경기소비재 <span class="tag">XLY</span></td><td>주택건설 <span class="tag">XHB</span></td></tr>
+      <tr><td class="k">필수소비재 <span class="tag">XLP</span></td><td>–</td></tr>
+      <tr><td class="k">에너지 <span class="tag">XLE</span></td><td>석유가스 개발 <span class="tag">XOP</span></td></tr>
+      <tr><td class="k">금융 <span class="tag">XLF</span></td><td>지역은행 <span class="tag">KRE</span></td></tr>
+      <tr><td class="k">헬스케어 <span class="tag">XLV</span></td><td>바이오 <span class="tag">XBI</span></td></tr>
+      <tr><td class="k">산업재 <span class="tag">XLI</span></td><td>항공우주·방산 <span class="tag">XAR</span></td></tr>
+      <tr><td class="k">소재 <span class="tag">XLB</span></td><td>금속·광업 <span class="tag">XME</span></td></tr>
+      <tr><td class="k">부동산 <span class="tag">XLRE</span></td><td>–</td></tr>
+      <tr><td class="k">유틸리티 <span class="tag">XLU</span></td><td>–</td></tr>
+    </tbody></table></div>
+    <div class="note"><span class="label">동일가중이란</span>
+      <p>섹터 ETF 11개는 회사 크기만큼 담는다. XLK는 몇몇 초대형 기술주가 큰 몫을 차지한다. 반면 XSD(반도체), XSW(소프트웨어), XBI(바이오)는 종목마다 <b>같은 금액</b>을 담는다. 그래서 대형주 몇 개가 아니라 업종 전체 분위기에 가깝다. XLK와 XSD가 반대로 움직이면 "대형주에만 돈이 몰린다"는 뜻일 수 있다.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="c5" data-title="숫자 여섯 가지">
+    <header><div class="num">5</div><h2>숫자 여섯 가지</h2></header>
+    <p>표의 칸 하나하나가 무엇인지 적었다. 예시는 XLU(유틸리티)의 20일 값이다.</p>
+    <div class="tbl"><table><thead><tr><th>칸</th><th>뜻</th><th>XLU 예시</th></tr></thead><tbody>
+      <tr><td class="k">유입액</td><td>기간 동안 매일 유입을 더한 값</td><td class="num up">+26.2억$</td></tr>
+      <tr><td class="k">순자산 대비</td><td>유입액 ÷ 기간이 시작할 때의 순자산. 크기가 다른 ETF끼리 비교하려고 쓴다</td><td class="num up">+12.4%</td></tr>
+      <tr><td class="k">평소 대비</td><td>같은 길이 기간의 "순자산 대비"를 지난 3년과 비교한 위치. 상위 1%는 3년 중 거의 가장 많이 들어온 편이라는 뜻</td><td class="num">상위 1%</td></tr>
+      <tr><td class="k">유입한 날</td><td>기간 중 돈이 들어온 날 수. 하루 큰돈인지 꾸준한 돈인지 구분한다</td><td class="num">14/20일</td></tr>
+      <tr><td class="k">S&P500 대비</td><td>같은 기간 ETF 등락률 − S&P500(SPY) 등락률. 배당 포함</td><td class="num up">+3.3%</td></tr>
+      <tr><td class="k">거래 관심</td><td>최근 5일 평균 거래대금 ÷ 직전 15일 평균. 1.2배 이상이면 관심이 커지는 중</td><td class="num">0.81배</td></tr>
+    </tbody></table></div>
+    <p class="tcap">거래 관심만 기간 버튼과 상관없이 늘 5일 대 15일로 잰다.</p>
+    <p><b>유입액과 거래대금은 다르다.</b> 거래대금은 사람들끼리 사고판 금액이고, 유입액은 ETF에 새로 들어온 돈이다. XLU는 돈은 많이 들어왔는데(+12.4%), 거래 관심은 줄었다(0.81배). 조용히 돈이 쌓이는 모습이다.</p>
+  </section>
+
+  <section class="chapter" id="c6" data-title="판정 다섯 가지">
+    <header><div class="num">6</div><h2>판정 다섯 가지</h2></header>
+    <p>판정은 두 질문을 겹친 것이다.</p>
+    <ol>
+      <li><b>돈이 평소보다 많이 움직였나?</b> "평소 대비"가 상위 30% 안이고 실제로 들어왔으면 <b>많이 들어옴</b>, 하위 30% 안이고 실제로 빠졌으면 <b>많이 빠짐</b>, 나머지는 <b>평소 수준</b>.</li>
+      <li><b>가격이 S&P500보다 강했나?</b> S&P500 대비가 +면 강함, −면 약함.</li>
+    </ol>
+    <div class="tbl"><table><thead><tr><th>판정</th><th>돈</th><th>가격</th><th>읽는 법</th></tr></thead><tbody>
+      <tr><td class="k"><span class="pill" style="background:#0ca30c;color:#0b0b0b">자금·가격 동반</span></td><td>많이 들어옴</td><td>강함</td><td>돈과 가격이 같은 방향. 흐름이 가장 분명하다</td></tr>
+      <tr><td class="k"><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td>많이 들어옴</td><td>약함</td><td>돈이 먼저 움직이는 중이거나, 떨어질 때 사 모으는 중</td></tr>
+      <tr><td class="k"><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td>평소 수준</td><td>상관없음</td><td>자금 흐름으로는 할 말이 없다</td></tr>
+      <tr><td class="k"><span class="pill" style="background:#fab219;color:#0b0b0b">가격만 강세</span></td><td>많이 빠짐</td><td>강함</td><td>돈이 빠지는데 가격만 버틴다. 오른 김에 파는 중일 수 있다</td></tr>
+      <tr><td class="k"><span class="pill" style="background:#d03b3b;color:#fff">자금·가격 이탈</span></td><td>많이 빠짐</td><td>약함</td><td>돈도 가격도 빠진다. 피하는 업종</td></tr>
+    </tbody></table></div>
+    <div class="note"><span class="label">해석 · 기준 숫자에 대해</span>
+      <p>상위·하위 30%, 3년 비교라는 숫자는 출발점으로 정한 값이다. 이 기준으로 판정한 업종이 그 뒤에 실제로 강했는지는 <b>아직 검증하지 않았다</b>. 그래서 판정을 날마다 기록해 두고, 몇 달 뒤에 맞춰 볼 수 있게 했다.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="c7" data-title="화면 읽는 법">
+    <header><div class="num">7</div><h2>화면 읽는 법</h2></header>
+    <p>화면은 다섯 부분이다. 맨 위 버튼으로 기간(5·20·60·120일)을 고르면 모든 부분이 그 기간으로 바뀐다. PC처럼 넓은 화면에서는 요약 띠·판정 칸·고른 업종 카드가 <b>오른쪽에 고정</b>되어, 아래로 내려도 계속 보인다. 휴대폰에서는 요약이 맨 위, 카드가 표 아래에 온다.</p>
+    <ul>
+      <li><b>요약 띠</b>: 섹터 11개에 들어온 돈의 합계, 들어온 섹터 수, 같은 기간 S&P500 등락. 자금 기준일도 여기에 나온다.</li>
+      <li><b>판정 칸 다섯 개</b>: 판정마다 몇 개인지, 어떤 ETF인지.</li>
+      <li><b>자금 좌표</b>: 오른쪽으로 갈수록 돈이 들어왔고, 위로 갈수록 S&P500보다 강했다. 오른쪽 위가 "자금·가격 동반" 자리다. 원이 클수록 큰 ETF이고, 속이 빈 원은 세부 업종이다. 원을 누르면 아래에 1년 흐름이 나온다.</li>
+      <li><b>섹터별 표</b>: 5장의 숫자 여섯 가지. 유입액 옆 막대는 가운데 선에서 <b class="up">오른쪽이 유입</b>, <b class="down">왼쪽이 유출</b>이다. 휴대폰에서는 표 대신 두 줄짜리 목록으로 바뀐다.</li>
+      <li><b>기간 일치 점 4개</b>: 표의 줄마다 5·20·60·120일 판정 색을 왼쪽부터 찍었다. 테두리가 있는 점이 고른 기간이다. 넷이 같은 색이면 흐름이 오래 이어지는 중이고, 짧은 기간과 긴 기간이 반대 색이면 방향이 바뀌는 중일 수 있다.</li>
+      <li><b>⚠ 반대 근거</b>: 판정과 어긋나는 점의 개수다. 업종을 누르면 카드에 문장으로 나온다. 다섯 가지를 본다. ① 같은 기간에 큰 유입과 큰 유출이 같이 있음(리밸런싱 왕복 의심) ② 순유입의 60% 이상이 하루에 몰림(20일 이상 기간) ③ 돈이 들어온(빠진) 날이 절반이 안 됨 ④ 다른 기간 판정이 반대 ⑤ 유입인데 거래 관심이 줄어듦. "큰 날"은 1년 하루 유입 크기(중앙값)의 5배를 넘는 날이다.</li>
+      <li><b>업종 카드</b>: 맨 위에 숫자를 풀어 쓴 한 줄 문장(얼마가 들어오고 나갔는지, 3년 중 어느 정도인지, S&P500보다 강했는지, 판정과 반대 근거)이 있다. 그 아래에 네 기간 판정, 숫자 여섯 가지, 가장 큰 하루, 반대 근거를 모았다.</li>
+      <li><b>기간별 판정 개수</b>: 판정 칸 아래 표. 판정 5가지가 5·20·60·120일에 각각 몇 개인지 보여 준다. 고른 기간 열이 밝다. 짧은 기간과 긴 기간의 분위기가 같은지 버튼을 누르지 않고 비교한다.</li>
+      <li><b>맨 위 고정 바</b>: 제목, 기간 버튼, 자금 기준일은 아래로 내려도 맨 위에 남는다.</li>
+      <li><b>1년 흐름</b>: 위는 1년 동안 쌓인 유입(파란 선, 위로 가면 돈이 들어옴), 아래는 S&P500 대비 가격(노란 선, 1년 전 = 100). 밝은 띠가 고른 기간이다. 선 위에 손가락이나 마우스를 대면 그날 유입이 나온다.</li>
+    </ul>
+    <div class="core"><span class="label">핵심</span><p>먼저 판정 칸에서 초록·빨강을 보고, 표에서 점 4개가 같은 색이고 ⚠ 가 없는 업종을 고른다. 눌러서 카드와 1년 흐름으로 확인한다.</p></div>
+  </section>
+
+  <section class="chapter" id="c8" data-title="10월 16일 화면 읽어 보기">
+    <header><div class="num">8</div><h2>10월 16일 화면 읽어 보기</h2></header>
+    <p>20일 기준, 미국 10월 16일까지의 실제 결과다. 섹터 11개에 합계 <b class="up">+71.2억 달러</b>가 들어왔고, 11개 중 8개에 돈이 들어왔다. 같은 기간 S&P500은 +0.2%였다.</p>
+    <div class="flow fl" role="img" aria-label="ETF별 20일 유입, 순자산 대비">
+      <div class="row head"><span>ETF</span><span class="l">← 유출</span><span class="r">유입 →</span></div>
+      <div class="row"><span class="t">XHB</span><span class="l"></span><span class="r"><i style="width:100%"></i><span>+12.7%</span></span></div><div class="row"><span class="t">XLU</span><span class="l"></span><span class="r"><i style="width:98%"></i><span>+12.4%</span></span></div><div class="row"><span class="t">KRE</span><span class="l"></span><span class="r"><i style="width:77%"></i><span>+9.8%</span></span></div><div class="row"><span class="t">XLC</span><span class="l"></span><span class="r"><i style="width:45%"></i><span>+5.8%</span></span></div><div class="row"><span class="t">XBI</span><span class="l"></span><span class="r"><i style="width:32%"></i><span>+4.0%</span></span></div><div class="row"><span class="t">XLE</span><span class="l"></span><span class="r"><i style="width:19%"></i><span>+2.4%</span></span></div><div class="row"><span class="t">XLRE</span><span class="l"></span><span class="r"><i style="width:15%"></i><span>+1.9%</span></span></div><div class="row"><span class="t">XLK</span><span class="l"></span><span class="r"><i style="width:11%"></i><span>+1.4%</span></span></div><div class="row"><span class="t">XLV</span><span class="l"></span><span class="r"><i style="width:10%"></i><span>+1.3%</span></span></div><div class="row"><span class="t">XLI</span><span class="l"></span><span class="r"><i style="width:8%"></i><span>+1.0%</span></span></div><div class="row"><span class="t">XLP</span><span class="l"></span><span class="r"><i style="width:5%"></i><span>+0.7%</span></span></div><div class="row"><span class="t">XLY</span><span class="l"><span>−0.4%</span><i style="width:3%"></i></span><span class="r"></span></div><div class="row"><span class="t">XLF</span><span class="l"><span>−0.6%</span><i style="width:5%"></i></span><span class="r"></span></div><div class="row"><span class="t">XOP</span><span class="l"><span>−2.3%</span><i style="width:18%"></i></span><span class="r"></span></div><div class="row"><span class="t">XLB</span><span class="l"><span>−3.0%</span><i style="width:24%"></i></span><span class="r"></span></div><div class="row"><span class="t">XSW</span><span class="l"><span>−5.9%</span><i style="width:47%"></i></span><span class="r"></span></div><div class="row"><span class="t">XME</span><span class="l"><span>−6.0%</span><i style="width:47%"></i></span><span class="r"></span></div><div class="row"><span class="t">XSD</span><span class="l"><span>−6.3%</span><i style="width:50%"></i></span><span class="r"></span></div><div class="row"><span class="t">XAR</span><span class="l"><span>−6.4%</span><i style="width:51%"></i></span><span class="r"></span></div>
+    </div>
+    <p class="tcap">막대는 20일 유입 ÷ 순자산(%). 큰 순서로 늘어놓았다.</p>
+    <div class="tbl"><table><thead><tr><th>ETF</th><th>판정</th><th class="num">20일 유입</th><th class="num">순자산 대비</th><th class="num">평소 대비</th><th class="num">S&amp;P500 대비</th></tr></thead><tbody><tr><td class="k">기술 <span class="tag">XLK</span></td><td><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td class="num up">+17.4억$</td><td class="num up">+1.4%</td><td class="num">상위 14%</td><td class="num down">−3.3%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 반도체 (동일가중) <span class="tag">XSD</span></td><td><span class="pill" style="background:#d03b3b;color:#fff">자금·가격 이탈</span></td><td class="num down">−2.0억$</td><td class="num down">−6.3%</td><td class="num">하위 3%</td><td class="num down">−9.0%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 소프트웨어 (동일가중) <span class="tag">XSW</span></td><td><span class="pill" style="background:#fab219;color:#0b0b0b">가격만 강세</span></td><td class="num down">−0.3억$</td><td class="num down">−5.9%</td><td class="num">하위 10%</td><td class="num up">+0.3%</td></tr><tr><td class="k">통신서비스 <span class="tag">XLC</span></td><td><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td class="num up">+12.9억$</td><td class="num up">+5.8%</td><td class="num">상위 4%</td><td class="num down">−0.3%</td></tr><tr><td class="k">경기소비재 <span class="tag">XLY</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num down">−0.9억$</td><td class="num down">−0.4%</td><td class="num">하위 46%</td><td class="num up">+1.3%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 주택건설 <span class="tag">XHB</span></td><td><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td class="num up">+1.8억$</td><td class="num up">+12.7%</td><td class="num">상위 9%</td><td class="num down">−1.2%</td></tr><tr><td class="k">필수소비재 <span class="tag">XLP</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num up">+0.9억$</td><td class="num up">+0.7%</td><td class="num">상위 35%</td><td class="num up">+6.3%</td></tr><tr><td class="k">에너지 <span class="tag">XLE</span></td><td><span class="pill" style="background:#0ca30c;color:#0b0b0b">자금·가격 동반</span></td><td class="num up">+9.9억$</td><td class="num up">+2.4%</td><td class="num">상위 13%</td><td class="num up">+6.5%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 석유가스 개발 <span class="tag">XOP</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num down">−1.0억$</td><td class="num down">−2.3%</td><td class="num">하위 37%</td><td class="num up">+5.3%</td></tr><tr><td class="k">금융 <span class="tag">XLF</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num down">−3.1억$</td><td class="num down">−0.6%</td><td class="num">하위 42%</td><td class="num down">−0.5%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 지역은행 <span class="tag">KRE</span></td><td><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td class="num up">+3.7억$</td><td class="num up">+9.8%</td><td class="num">상위 19%</td><td class="num down">−3.7%</td></tr><tr><td class="k">헬스케어 <span class="tag">XLV</span></td><td><span class="pill" style="background:#0ca30c;color:#0b0b0b">자금·가격 동반</span></td><td class="num up">+5.7억$</td><td class="num up">+1.3%</td><td class="num">상위 15%</td><td class="num up">+5.1%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 바이오 (동일가중) <span class="tag">XBI</span></td><td><span class="pill" style="background:#3987e5;color:#fff">자금만 유입</span></td><td class="num up">+4.1억$</td><td class="num up">+4.0%</td><td class="num">상위 21%</td><td class="num down">−8.1%</td></tr><tr><td class="k">산업재 <span class="tag">XLI</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num up">+3.0억$</td><td class="num up">+1.0%</td><td class="num">상위 47%</td><td class="num down">−1.1%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 항공우주·방산 <span class="tag">XAR</span></td><td><span class="pill" style="background:#d03b3b;color:#fff">자금·가격 이탈</span></td><td class="num down">−3.9억$</td><td class="num down">−6.4%</td><td class="num">하위 2%</td><td class="num down">−6.5%</td></tr><tr><td class="k">소재 <span class="tag">XLB</span></td><td><span class="pill" style="background:#fab219;color:#0b0b0b">가격만 강세</span></td><td class="num down">−2.4억$</td><td class="num down">−3.0%</td><td class="num">하위 26%</td><td class="num up">+2.1%</td></tr><tr><td class="k">&nbsp;&nbsp;└ 금속·광업 <span class="tag">XME</span></td><td><span class="pill" style="background:#d03b3b;color:#fff">자금·가격 이탈</span></td><td class="num down">−2.6억$</td><td class="num down">−6.0%</td><td class="num">하위 18%</td><td class="num down">−7.3%</td></tr><tr><td class="k">부동산 <span class="tag">XLRE</span></td><td><span class="pill" style="background:#898781;color:#0b0b0b">뚜렷하지 않음</span></td><td class="num up">+1.5억$</td><td class="num up">+1.9%</td><td class="num">상위 38%</td><td class="num down">−0.2%</td></tr><tr><td class="k">유틸리티 <span class="tag">XLU</span></td><td><span class="pill" style="background:#0ca30c;color:#0b0b0b">자금·가격 동반</span></td><td class="num up">+26.2억$</td><td class="num up">+12.4%</td><td class="num">상위 1%</td><td class="num up">+3.3%</td></tr></tbody></table></div>
+    <p class="tcap">자료: 화면이 저장한 flow_기록/2026-10-16.json</p>
+    <p>표에서 바로 읽히는 사실은 이렇다.</p>
+    <ul>
+      <li><b>돈과 가격이 같이 들어온 곳</b>: 에너지, 헬스케어, 유틸리티. 유틸리티는 3년 중 거의 가장 많이 들어온 수준(상위 1%)이다.</li>
+      <li><b>돈과 가격이 같이 빠진 곳</b>: 반도체(동일가중), 항공우주·방산, 금속·광업. 셋 다 3년 중 하위 20% 안이다.</li>
+      <li><b>기술(XLK)에는 들어왔는데 반도체(XSD)·소프트웨어(XSW)에서는 빠졌다.</b></li>
+    </ul>
+    <div class="note"><span class="label">해석</span>
+      <ul>
+        <li><b>대형 기술주에만 돈이 몰리는 모습일 수 있다.</b> 대형주 위주 XLK에는 17억 달러가 들어왔는데, 종목을 똑같이 담는 XSD·XSW에서는 빠졌다. 돈이 업종 전체로 퍼지지 않고 큰 회사 몇 곳에 모인다는 뜻으로 읽힌다.</li>
+        <li><b>유틸리티 유입은 두 가지로 읽힌다.</b> 덜 흔들리는 업종으로 피하는 돈일 수도 있고, 데이터센터 전력 수요를 기대한 돈일 수도 있다. 이 자료만으로는 둘을 구분할 수 없다.</li>
+        <li><b>"자금만 유입" 5개는 지켜볼 후보다.</b> 돈이 먼저 들어오고 가격이 나중에 따라오는지는 다음 몇 주 기록으로 확인해야 한다.</li>
+        <li><b>반도체(XSD)의 이탈은 반대 근거가 4개다.</b> 20일 순유출의 87%가 9월 21일 하루에 몰렸다. 그날은 9월 18일(분기 만기·지수 조정) 다음 거래일이다. 60·120일 판정은 오히려 "자금만 유입"이다. 꾸준히 빠지는 돈이라기보다 조정일 하루의 흐름일 가능성이 있다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="chapter" id="c9" data-title="함정과 한계">
+    <header><div class="num">9</div><h2>함정과 한계</h2></header>
+    <ul>
+      <li><b>주식 분할일.</b> 2025년 12월 5일에 XLK·XLU 등 5개가 2대1 분할을 했다. 주식 수가 하루에 두 배가 되어 가짜로 수백억 달러가 들어온 것처럼 보인다. 프로그램이 분할을 찾아 자동으로 빼고 센다. 화면 1년 흐름 위에 "분할일 보정함"이 표시된다.</li>
+      <li><b>리밸런싱 왕복.</b> 분기 말 지수 조정 때 큰돈이 들어왔다가 며칠 만에 그대로 나간다. XLK는 2026년 6월 17일 +89억, 6월 22일 −93억 달러였다. 20일 합계에서는 서로 지워지지만 <b>5일 값은 크게 튈 수 있다.</b></li>
+      <li><b>하루 늦다.</b> State Street가 다음 날 올린다. 한국 시간 화요일 아침에도 자금 기준일은 미국 금요일일 수 있다.</li>
+      <li><b>업종 돈의 일부만 본다.</b> 같은 업종에 다른 ETF(SOXX, SMH, VGT 등)와 개별 주식 거래가 훨씬 많다. 이 19개는 표본이다.</li>
+      <li><b>작은 ETF는 %가 크게 나온다.</b> 주택건설(XHB)은 1.8억 달러로 +12.7%지만, XLK는 17.4억 달러로 +1.4%다. 금액과 %를 같이 본다.</li>
+      <li><b>날짜가 하루 밀릴 수 있다.</b> 운용사가 적는 주식 수가 그날 기준인지 전날 기준인지는 확인하지 못했다.</li>
+      <li><b>판정 기준은 검증 전이다.</b> 6장에 적은 대로다.</li>
+    </ul>
+    <div class="core"><span class="label">핵심</span><p>판정 하나만 보고 움직이지 않는다. 20일 이상 기간에서 금액·%·유입한 날이 같은 방향인지 함께 본다.</p></div>
+  </section>
+
+  <section class="chapter" id="c10" data-title="켜고 끄기와 파일">
+    <header><div class="num">10</div><h2>켜고 끄기와 파일</h2></header>
+    <ul>
+      <li><b>켜기</b>: 무한질문정리봇 폴더의 <code>섹터자금흐름_실행.bat</code>. 창 없이 켜지고 브라우저가 열린다. 처음 열 때는 자료를 받느라 30초쯤 걸린다.</li>
+      <li><b>끄기</b>: <code>섹터자금흐름_끄기.bat</code></li>
+      <li><b>이 PC</b>: http://127.0.0.1:8602</li>
+      <li><b>휴대폰</b>: (PC 통로 주소) (매매자료정리와 같은 비밀번호)</li>
+      <li><b>PC를 켜면 저절로 켜진다.</b> Windows에 로그인할 때 창 없이 켜진다 (시작프로그램 폴더의 <code>sector_flow_autostart.vbs</code>). 끄기 bat으로 꺼도 다음 로그인 때 다시 켜진다. 자동 실행을 멈추려면 그 파일을 지운다.</li>
+      <li>화면은 10분마다 저절로 새로 고친다.</li>
+    </ul>
+    <div class="tbl"><table><thead><tr><th>파일·폴더</th><th>하는 일</th></tr></thead><tbody>
+      <tr><td class="k">flow_data.py</td><td>자료 받기, 분할 보정, 숫자 계산, 판정</td></tr>
+      <tr><td class="k">flow_web.py</td><td>화면 서버 (이 PC에서만 열림)</td></tr>
+      <tr><td class="k">flow_cache</td><td>받아 둔 엑셀 19개</td></tr>
+      <tr><td class="k">flow_기록</td><td>날짜별 판정 기록. 나중에 맞았는지 맞춰 보는 데 쓴다</td></tr>
+      <tr><td class="k">매매자료정리 app.py</td><td>휴대폰용 /flow/ 통로 (로그인 검사 후 전달)</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="chapter" id="c11" data-title="낱말 풀이">
+    <header><div class="num">용어</div><h2>낱말 풀이</h2></header>
+    <ul>
+      <li><b>ETF</b>: 여러 주식을 묶어 주식처럼 사고파는 상품.</li>
+      <li><b>NAV</b>: ETF 한 주가 실제로 담고 있는 재산의 값. 장중 가격과 거의 같다.</li>
+      <li><b>순자산</b>: ETF가 가진 재산 전체. 주식 수 × NAV.</li>
+      <li><b>설정·환매</b>: ETF가 주식을 새로 찍는 것(설정, 돈이 들어옴)과 없애는 것(환매, 돈이 나감).</li>
+      <li><b>평소 대비 (백분위)</b>: 지난 3년의 값을 줄 세웠을 때 지금 값의 자리. 상위 10%면 열 번 중 한 번 나올 만큼 많은 편.</li>
+      <li><b>초과수익</b>: S&P500보다 더 오르거나 덜 떨어진 만큼.</li>
+      <li><b>동일가중</b>: 종목마다 같은 금액을 담는 방식. 4장 참고.</li>
+      <li><b>리밸런싱</b>: 지수 구성이 바뀔 때 ETF가 담은 주식을 맞추는 일. 9장 참고.</li>
+      <li><b>주식 분할</b>: 한 주를 두 주로 쪼개는 것. 가치는 그대로이고 주식 수만 는다.</li>
+    </ul>
+    <div class="copy-row noprint"><button id="copyAll">📋 전체 글 복사</button></div>
+  </section>
+
+  <div class="end"><b>끝</b>관측 자료일 뿐 매수·매도 권유가 아니다.</div>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var KEY = "sectorflow-fs";
+  var size = 19;
+  try { var s = parseInt(localStorage.getItem(KEY), 10); if (s >= 15 && s <= 26) size = s; } catch (e) {}
+  function apply() { root.style.setProperty("--fs", size + "px"); try { localStorage.setItem(KEY, String(size)); } catch (e) {} }
+  apply();
+  document.getElementById("fsUp").addEventListener("click", function () { if (size < 26) { size++; apply(); } });
+  document.getElementById("fsDown").addEventListener("click", function () { if (size > 15) { size--; apply(); } });
+  var tocBtn = document.getElementById("tocBtn"), toc = document.getElementById("toc");
+  tocBtn.addEventListener("click", function () { toc.hidden = !toc.hidden; tocBtn.setAttribute("aria-expanded", String(!toc.hidden)); });
+  toc.addEventListener("click", function (e) { if (e.target.closest("a")) { toc.hidden = true; tocBtn.setAttribute("aria-expanded", "false"); } });
+  var prog = document.getElementById("prog"), barChap = document.getElementById("barChap");
+  var chapters = Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + "%";
+    var cur = "표지";
+    for (var i = 0; i < chapters.length; i++) { if (chapters[i].getBoundingClientRect().top < 120) cur = chapters[i].getAttribute("data-title"); }
+    barChap.textContent = cur;
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  var target = location.hash && document.querySelector(location.hash);
+  function jump() { if (target) target.scrollIntoView({ behavior: "instant", block: "start" }); onScroll(); }
+  jump();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(jump);
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+    ta.remove(); return ok;
+  }
+  document.getElementById("copyAll").addEventListener("click", function () {
+    var btn = this, label = btn.textContent;
+    document.body.classList.add("copying");
+    var text = document.getElementById("main").innerText;
+    document.body.classList.remove("copying");
+    function done(ok) {
+      btn.textContent = ok ? "✅ 복사됐어요" : "❌ 복사 실패 — 글을 길게 눌러 직접 복사하세요";
+      btn.classList.toggle("done", ok);
+      setTimeout(function () { btn.textContent = label; btn.classList.remove("done"); }, 2500);
+    }
+    try { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); }); }
+    catch (e) { done(fallbackCopy(text)); }
+  });
+})();
+</script>
+</html>

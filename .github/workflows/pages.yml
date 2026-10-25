@@ -1,0 +1,48 @@
+# 30분마다 대시보드 자료를 새로 만들어 GitHub Pages 에 올린다.
+name: pages
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"   # 정각은 GitHub 이 붐벼서 늦어지므로 7분, 37분
+  workflow_dispatch:          # Actions 화면에서 손으로 돌리기
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      TZ: Asia/Seoul          # 화면의 갱신 시각을 한국 시간으로
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python build_site.py site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+      # 공개 저장소의 예약 실행은 60일 동안 활동이 없으면 GitHub 이 멈춘다. 매번 다시 켜 둔다.
+      - name: keep schedule alive
+        if: always()
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/pages.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
