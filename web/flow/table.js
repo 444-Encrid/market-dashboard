@@ -6,7 +6,7 @@ function dots(it) {
     return `<i class="dot${w === win ? " cur" : ""}" style="background:${l ? COLORS[l] : GRID}" title="${w}일: ${l || "자료 부족"}"></i>`;
   }).join("")}</span>`;
 }
-function warnMark(w) { return w.against && w.against.length ? `<span class="warn" title="${esc(w.against.join(" / "))}">⚠ ${w.against.length}</span>` : `<span class="dim">–</span>`; }
+function warnMark(w) { return w.against && w.against.length ? `<span class="warn" title="${esc(w.against.join(" / "))}"><span class="ico">⚠️</span> ${w.against.length}</span>` : `<span class="dim">–</span>`; }
 
 function flowBar(pct, max) {
   const w = Math.min(Math.abs(pct) / max, 1) * 100, c = pct >= 0 ? "#4cc94c" : "#ef6a6a";

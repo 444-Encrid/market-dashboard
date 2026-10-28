@@ -81,12 +81,12 @@ function drawChart(it) {
     margin: {l: 4, r: 40, t: 8, b: 26}, showlegend: false, shapes, annotations,
     paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)", hovermode: "x unified", dragmode: false,
     hoverlabel: {bgcolor: SURFACE, bordercolor: GRID, font: {color: INK}},
-    font: {family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: MUTED, size: 11},
+    font: {family: FONT, color: MUTED, size: 11},
     xaxis: {showgrid: false, linecolor: GRID, tickformat: "%m/%d", nticks: 5, fixedrange: true,
             showspikes: true, spikemode: "across", spikethickness: 1, spikecolor: MUTED, spikedash: "solid"},
     yaxis: {gridcolor: GRID, zeroline: false, side: "right", nticks: 4, fixedrange: true, range: [lo - pad, hi + pad]},
   };
-  Plotly.react("chart_" + it.key, traces, layout, {displayModeBar: false, responsive: true});
+  Plotly.react("chart_" + it.key, traces, layout, {displayModeBar: false, responsive: true}).then(plainMinus);
 }
 
 function summaryHtml(items) {

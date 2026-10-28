@@ -19,7 +19,7 @@ function cardHtml() {
   const intr = it.interest == null ? "–" : `<span class="${it.interest >= 1.2 ? "pos" : it.interest <= 0.8 ? "neg" : ""}">${it.interest.toFixed(2)}배</span>`;
   const top = `${w.top_date.slice(5).replace("-", "/")} <span class="${cls(w.top_flow)}">${eok(w.top_flow)}</span>`;
   const against = w.against && w.against.length
-    ? `<div class="against-title">⚠ 반대 근거 ${w.against.length}개</div><ul class="against">${w.against.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`
+    ? `<div class="against-title"><span class="ico">⚠️</span> 반대 근거 ${w.against.length}개</div><ul class="against">${w.against.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`
     : (["뚜렷하지 않음", null].includes(w.label) ? `<div class="calm">자금 흐름이 평소 수준이라 따로 볼 근거가 없습니다.</div>`
                                                   : `<div class="calm">눈에 띄는 반대 근거가 없습니다.</div>`);
   return `<div class="card-head"><b>${esc(it.name)} <span class="tk">${it.ticker}</span></b>${badge(w.label)}</div>` +
@@ -49,7 +49,7 @@ function drawDetail() {
     margin: {l: 8, r: 54, t: 22, b: 26}, showlegend: false, dragmode: false, hovermode: "x unified",
     paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
     hoverlabel: {bgcolor: SURFACE, bordercolor: GRID, font: {color: INK}},
-    font: {family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: MUTED, size: 11},
+    font: {family: FONT, color: MUTED, size: 11},
     xaxis: {showgrid: false, linecolor: GRID, tickformat: "%y/%m", fixedrange: true, showspikes: true, spikemode: "across", spikethickness: 1, spikecolor: MUTED},
     yaxis: {domain: [0.45, 1], gridcolor: GRID, zerolinecolor: MUTED, side: "right", ticksuffix: "억", fixedrange: true, nticks: 5},
     yaxis3: {domain: [0, 0.36], gridcolor: GRID, zeroline: false, side: "right", fixedrange: true, nticks: 4},
@@ -62,5 +62,5 @@ function drawDetail() {
       {xref: "paper", yref: "paper", x: 0, y: 0.38, xanchor: "left", showarrow: false, text: "노란 선: S&P500 대비 가격 (1년 전 = 100, 위로 가면 더 강함)", font: {color: MUTED, size: 11}},
     ],
   };
-  Plotly.react("detail-chart", traces, layout, {displayModeBar: false, responsive: true});
+  Plotly.react("detail-chart", traces, layout, {displayModeBar: false, responsive: true}).then(plainMinus);
 }

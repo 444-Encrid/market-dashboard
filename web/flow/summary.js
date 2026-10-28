@@ -46,11 +46,11 @@ function drawScatter() {
     margin: {l: 50, r: 16, t: 10, b: 44}, showlegend: false, dragmode: false,
     paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
     hoverlabel: {bgcolor: SURFACE, bordercolor: GRID, font: {color: INK}},
-    font: {family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: MUTED, size: 11},
+    font: {family: FONT, color: MUTED, size: 11},
     xaxis: {title: {text: "← 유출 · 순자산 대비 유입 % · 유입 →"}, gridcolor: GRID, zerolinecolor: MUTED, ticksuffix: "%", fixedrange: true},
     yaxis: {title: {text: "S&P500 대비 %"}, gridcolor: GRID, zerolinecolor: MUTED, ticksuffix: "%", fixedrange: true},
   };
-  Plotly.react("scatter", traces, layout, {displayModeBar: false, responsive: true});
+  Plotly.react("scatter", traces, layout, {displayModeBar: false, responsive: true}).then(plainMinus);
   $("scatter").removeAllListeners?.("plotly_click");
   $("scatter").on("plotly_click", e => select(e.points[0].text));
 }

@@ -1,7 +1,8 @@
 :root{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
 --grid:#2c2c2a;--ok:#0ca30c;--warn:#fab219;--danger:#d03b3b}
 *{box-sizing:border-box}
-body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Pretendard Variable",Pretendard,Tossface,sans-serif}
+.ico{font-family:Tossface;font-weight:400}
 main{max-width:1400px;margin:0 auto;padding:20px 16px 40px}
 h1{font-size:1.9rem;margin:0 0 12px}
 h2{font-size:1.3rem;margin:26px 0 10px}

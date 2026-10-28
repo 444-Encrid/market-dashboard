@@ -45,7 +45,7 @@ SPECS = [
     Spec("spx_ma200", "S&P500 200일선 이격", "%", 1,
          "200일 평균가보다 얼마나 위/아래인지. 아래로 내려가면 장기 추세 약화.",
          warn=0, danger=-5, higher_is_worse=False),
-    Spec("t10y2y", "장단기 금리차 (10년 − 2년)", "%p", 2,
+    Spec("t10y2y", "장단기 금리차 (10년 - 2년)", "%p", 2,
          "0 아래(역전)는 대표적인 경기침체 선행 신호.",
          warn=0.25, danger=0, higher_is_worse=False),
     Spec("hy", "하이일드 스프레드", "%p", 2,
